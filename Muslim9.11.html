@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muslim 9.11</title>
+
+    <style>
+      body {
+        background-image: url("img/GalaxyBackground.png");
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+      }
+
+      header {
+        background-color: #040331;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin: 0;
+        border: 2px solid #000000;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        z-index: 1;
+      }
+      header a {
+        color: white;
+        font-size: 16;
+        text-decoration: none;
+        margin: 0 15px;
+      }
+      header a:hover {
+        font-size: 120%;
+      }
+      canvas {
+        background-color: black;
+        margin-top: 150px;
+      }
+    </style>
+
+    <script>
+      let canvas;
+      let ctx;
+      let KEY_SPACE;
+      let backgroundImage = new Image();
+      let plane = {
+        x: 200,
+        y: 250,
+        width: 100,
+        height: 50,
+        src: "img/plane.png",
+        img: new Image(),
+      };
+      let GameOver = false;
+      let score = 0;
+      let towers = [];
+
+      let gameOverImage = new Image();
+      gameOverImage.src = "img/GameOver.png";
+
+      document.onkeydown = function (e) {
+        if (e.keyCode == 32) {
+          KEY_SPACE = true;
+        }
+      };
+
+      document.onkeyup = function (e) {
+        if (e.keyCode == 32) {
+          KEY_SPACE = false;
+        }
+      };
+
+      function startGame() {
+        canvas = document.getElementById("canvas");
+        ctx = canvas.getContext("2d");
+        loadImages();
+        setInterval(update, 1000 / 25);
+        setInterval(createTowers, 3000);
+        setInterval(checkForCollision, 1000 / 25);
+        draw();
+      }
+
+      function checkForCollision() {
+        towers.forEach(function (tower) {
+          if (
+            plane.x < tower.x + tower.width &&
+            plane.x + plane.width > tower.x &&
+            plane.y < tower.y + tower.height &&
+            plane.y + plane.height > tower.y
+          ) {
+            plane.img.src = "img/explosion.png";
+            GameOver = true;
+          }
+        });
+        if (
+          towers.length >= 2 &&
+          plane.x > towers[0].x + towers[0].width &&
+          plane.x > towers[1].x + towers[1].width
+        ) {
+          score++;
+          towers.splice(0, 2);
+        }
+      }
+
+      function createTowers() {
+        let min = -350;
+        let max = -650;
+
+        function randi_range(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        let random1Y = randi_range(-350, canvas.height - 650);
+
+        let tower1 = {
+          x: canvas.width,
+          y: random1Y,
+          width: 100,
+          height: 500,
+          src: "img/tower2.png",
+          img: new Image(),
+        };
+        tower1.img.src = tower1.src;
+        towers.push(tower1);
+
+        let tower2 = {
+          x: canvas.width,
+          y: random1Y + 650,
+          width: 100,
+          height: 500,
+          src: "img/tower1.png",
+          img: new Image(),
+        };
+        tower2.img.src = tower2.src;
+        towers.push(tower2);
+      }
+
+      function update() {
+        if (!GameOver) {
+          if (KEY_SPACE && plane.y > 0) {
+            plane.y -= 5;
+          } else {
+            plane.y += 5;
+          }
+
+          plane.y = Math.min(
+            canvas.height - plane.height,
+            Math.max(0, plane.y)
+          );
+
+          towers.forEach(function (tower) {
+            tower.x -= 5;
+          });
+        }
+      }
+
+      function loadImages() {
+        backgroundImage.src = "img/background.png";
+        plane.img.src = plane.src;
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
+        if (!GameOver) {
+          ctx.drawImage(plane.img, plane.x, plane.y, plane.width, plane.height);
+
+          towers.forEach(function (tower) {
+            ctx.drawImage(
+              tower.img,
+              tower.x,
+              tower.y,
+              tower.width,
+              tower.height
+            );
+          });
+
+          ctx.fillStyle = "white";
+          ctx.font = "20px Arieal";
+          ctx.fillText("Score: " + score, 20, 30);
+        } else {
+          ctx.drawImage(
+            gameOverImage,
+            200,
+            125,
+            canvas.width / 2,
+            canvas.height / 2
+          );
+          ctx.fillStyle = "white";
+          ctx.font = "20px Arial";
+          ctx.fillText(
+            "Score: " + score,
+            370,
+            350,
+            canvas.width / 8,
+            canvas.height / 8
+          );
+        }
+
+        requestAnimationFrame(draw);
+      }
+    </script>
+  </head>
+  <body onload="startGame()">
+    <header>
+      <a href="PadarTheNolat.html">PTN</a>
+      <a href="PadarTheNolat.html">Home</a>
+      <a href="Game.html">Game</a>
+      <a href="NiggerShop.html">Shops</a>
+      <a href="ToDo.html">ToDo</a>
+    </header>
+    <canvas id="canvas" width="800" height="500"></canvas>
+  </body>
+</html>

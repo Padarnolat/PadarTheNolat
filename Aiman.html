@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aiman-Penis-Game</title>
+
+    <style>
+      body {
+        background-image: url("img/GalaxyBackground.png");
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+      }
+
+      header {
+        background-color: #040331;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin: 0;
+        border: 2px solid #000000;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        z-index: 1;
+      }
+      header a {
+        color: white;
+        font-size: 16;
+        text-decoration: none;
+        margin: 0 15px;
+      }
+      header a:hover {
+        font-size: 120%;
+      }
+      canvas {
+        background-color: black;
+        margin-top: 150px;
+      }
+    </style>
+
+    <script>
+      let KEY_SPACE = false;
+      let KEY_UP = false;
+      let KEY_DOWN = false;
+      let canvas;
+      let ctx;
+      let backgroundImage = new Image();
+
+      let rocket = {
+        x: 50,
+        y: 200,
+        width: 100,
+        height: 50,
+        src: "img/penis.png",
+        img: new Image(),
+      };
+
+      let ufos = [];
+      let shots = [];
+
+      document.onkeydown = function (e) {
+        if (e.keyCode == 32) {
+          KEY_SPACE = true;
+        }
+
+        if (e.keyCode == 38) {
+          KEY_UP = true;
+        }
+
+        if (e.keyCode == 40) {
+          KEY_DOWN = true;
+        }
+      };
+
+      document.onkeyup = function (e) {
+        if (e.keyCode == 32) {
+          KEY_SPACE = false;
+        }
+
+        if (e.keyCode == 38) {
+          KEY_UP = false;
+        }
+
+        if (e.keyCode == 40) {
+          KEY_DOWN = false;
+        }
+      };
+
+      function startGame() {
+        canvas = document.getElementById("canvas");
+        ctx = canvas.getContext("2d");
+        canvas.style.border = "1px solid white";
+        loadImages();
+        setInterval(update, 1000 / 25);
+        setInterval(createUfos, 5000);
+        setInterval(checkForCollision, 1000 / 25);
+        setInterval(checkForShoot, 1000 / 10);
+        draw();
+      }
+
+      function checkForCollision() {
+        ufos.forEach(function (ufo) {
+          if (
+            rocket.x < ufo.x + ufo.width &&
+            rocket.x + rocket.width > ufo.x &&
+            rocket.y < ufo.y + ufo.height &&
+            rocket.y + rocket.height > ufo.y
+          ) {
+            rocket.img.src = "img/boom.png";
+            console.log("Collision!!!");
+            ufos = ufos.filter((u) => u != ufo);
+          }
+
+          shots.forEach(function (shot) {
+            if (
+              shot.x < ufo.x + ufo.width &&
+              shot.x + shot.width > ufo.x &&
+              shot.y < ufo.y + ufo.height &&
+              shot.y + shot.height > ufo.y
+            ) {
+              ufo.hit = true;
+              ufo.img.src = "img/boom.png";
+              console.log("Collision!!!");
+
+              setTimeout(() => {
+                ufos = ufos.filter((u) => u != ufo);
+              }, 2000);
+            }
+          });
+        });
+      }
+
+      function createUfos() {
+        let ufo = {
+          x: canvas.width,
+          y: Math.random() * (canvas.height - 40),
+          width: 100,
+          height: 100,
+          src: "img/Aiman.png",
+          img: new Image(),
+          hit: false,
+        };
+        ufo.img.src = ufo.src;
+        ufos.push(ufo);
+      }
+
+      function checkForShoot() {
+        if (KEY_SPACE) {
+          let shot = {
+            x: rocket.x + rocket.width,
+            y: rocket.y + rocket.height / 2 - 2,
+            width: 20,
+            height: 20,
+            src: "img/sperm.png",
+            img: new Image(),
+          };
+          shot.img.src = shot.src;
+
+          shots.push(shot);
+        }
+      }
+
+      function update() {
+        if (KEY_UP && rocket.y > 0) {
+          rocket.y -= 5;
+        }
+
+        if (KEY_DOWN && rocket.y + rocket.height < canvas.height) {
+          rocket.y += 5;
+        }
+
+        ufos.forEach(function (ufo) {
+          if (!ufo.hit) {
+            ufo.x -= 5;
+          }
+        });
+
+        shots.forEach(function (shot) {
+          shot.x += 15;
+        });
+
+        ufos = ufos.filter((ufo) => ufo.x + ufo.width > 0);
+
+        shots = shots.filter((shot) => shot.x < canvas.width);
+      }
+
+      function loadImages() {
+        backgroundImage.src = "img/starry-sky.png";
+        rocket.img.src = rocket.src;
+      }
+
+      function draw() {
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(
+          rocket.img,
+          rocket.x,
+          rocket.y,
+          rocket.width,
+          rocket.height
+        );
+
+        ufos.forEach(function (ufo) {
+          ctx.drawImage(ufo.img, ufo.x, ufo.y, ufo.width, ufo.height);
+        });
+
+        shots.forEach(function (shot) {
+          ctx.drawImage(shot.img, shot.x, shot.y, shot.width, shot.height);
+        });
+
+        requestAnimationFrame(draw);
+      }
+    </script>
+  </head>
+
+  <body onload="startGame()">
+    <header>
+      <a href="PadarTheNolat.html">PTN</a>
+      <a href="PadarTheNolat.html">Home</a>
+      <a href="Game.html">Game</a>
+      <a href="NiggerShop.html">Shops</a>
+      <a href="ToDo.html">ToDo</a>
+    </header>
+    <canvas id="canvas" width="720" height="480"></canvas>
+  </body>
+</html>
