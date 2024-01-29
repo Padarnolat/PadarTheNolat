@@ -7,7 +7,7 @@
 
     <style>
       body {
-        background-image: url("img/GalaxyBackground.png");
+        background-image: url("GalaxyBackground.png");
         margin: 0;
         align-items: center;
         justify-content: center;
@@ -56,7 +56,7 @@
         y: 200,
         width: 100,
         height: 50,
-        src: "img/lightsaber.png",
+        src: "lightsaber.png",
         img: new Image(),
       };
 
@@ -111,7 +111,7 @@
             rocket.y < ufo.y + ufo.height &&
             rocket.y + rocket.height > ufo.y
           ) {
-            rocket.img.src = "img/explosion.png";
+            rocket.img.src = "explosion.png";
             console.log("Collision!!!");
             ufos = ufos.filter((u) => u != ufo);
           }
@@ -124,7 +124,7 @@
               shot.y + shot.height > ufo.y
             ) {
               ufo.hit = true;
-              ufo.img.src = "img/explosion.png";
+              ufo.img.src = "explosion.png";
               console.log("Collision!!!");
 
               setTimeout(() => {
@@ -141,7 +141,7 @@
           y: Math.random() * (canvas.height - 40),
           width: 100,
           height: 100,
-          src: "img/star-wars.png",
+          src: "star-wars.png",
           img: new Image(),
           hit: false,
         };
@@ -156,7 +156,7 @@
             y: rocket.y + rocket.height / 2 - 2,
             width: 20,
             height: 4,
-            src: "img/shot.png",
+            src: "shot.png",
             img: new Image(),
           };
           shot.img.src = shot.src;
@@ -190,7 +190,7 @@
       }
 
       function loadImages() {
-        backgroundImage.src = "img/starry-sky.png";
+        backgroundImage.src = "starry-sky.png";
         rocket.img.src = rocket.src;
       }
 
