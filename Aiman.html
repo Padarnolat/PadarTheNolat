@@ -51,6 +51,12 @@
       let ctx;
       let backgroundImage = new Image();
 
+      let GameOver = false;
+      let score = 0;
+
+      let gameOverImage = new Image();
+      gameOverImage.src = "img/GameOver.png";
+
       let rocket = {
         x: 50,
         y: 200,
@@ -114,6 +120,7 @@
             rocket.img.src = "boom.png";
             console.log("Collision!!!");
             ufos = ufos.filter((u) => u != ufo);
+            GameOver = true;
           }
 
           shots.forEach(function (shot) {
@@ -126,6 +133,7 @@
               ufo.hit = true;
               ufo.img.src = "boom.png";
               console.log("Collision!!!");
+              score++;
 
               setTimeout(() => {
                 ufos = ufos.filter((u) => u != ufo);
@@ -166,27 +174,29 @@
       }
 
       function update() {
-        if (KEY_UP && rocket.y > 0) {
-          rocket.y -= 5;
-        }
-
-        if (KEY_DOWN && rocket.y + rocket.height < canvas.height) {
-          rocket.y += 5;
-        }
-
-        ufos.forEach(function (ufo) {
-          if (!ufo.hit) {
-            ufo.x -= 5;
+        if (!GameOver) {
+          if (KEY_UP && rocket.y > 0) {
+            rocket.y -= 5;
           }
-        });
 
-        shots.forEach(function (shot) {
-          shot.x += 15;
-        });
+          if (KEY_DOWN && rocket.y + rocket.height < canvas.height) {
+            rocket.y += 5;
+          }
 
-        ufos = ufos.filter((ufo) => ufo.x + ufo.width > 0);
+          ufos.forEach(function (ufo) {
+            if (!ufo.hit) {
+              ufo.x -= 5;
+            }
+          });
 
-        shots = shots.filter((shot) => shot.x < canvas.width);
+          shots.forEach(function (shot) {
+            shot.x += 15;
+          });
+
+          ufos = ufos.filter((ufo) => ufo.x + ufo.width > 0);
+
+          shots = shots.filter((shot) => shot.x < canvas.width);
+        }
       }
 
       function loadImages() {
@@ -197,22 +207,43 @@
       function draw() {
         ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
-        ctx.drawImage(
-          rocket.img,
-          rocket.x,
-          rocket.y,
-          rocket.width,
-          rocket.height
-        );
+        if (!GameOver) {
+          ctx.drawImage(
+            rocket.img,
+            rocket.x,
+            rocket.y,
+            rocket.width,
+            rocket.height
+          );
 
-        ufos.forEach(function (ufo) {
-          ctx.drawImage(ufo.img, ufo.x, ufo.y, ufo.width, ufo.height);
-        });
+          ufos.forEach(function (ufo) {
+            ctx.drawImage(ufo.img, ufo.x, ufo.y, ufo.width, ufo.height);
+          });
 
-        shots.forEach(function (shot) {
-          ctx.drawImage(shot.img, shot.x, shot.y, shot.width, shot.height);
-        });
-
+          shots.forEach(function (shot) {
+            ctx.drawImage(shot.img, shot.x, shot.y, shot.width, shot.height);
+          });
+          ctx.fillStyle = "white";
+          ctx.font = "20px Ariel";
+          ctx.fillText("Score: " + score, 20, 30);
+        } else {
+          ctx.drawImage(
+            gameOverImage,
+            180,
+            120,
+            canvas.width / 2,
+            canvas.height / 2
+          );
+          ctx.fillStyle = "white";
+          ctx.font = "20px Ariel";
+          ctx.fillText(
+            "Score: " + score,
+            335,
+            340,
+            canvas.width / 8,
+            canvas.height / 8
+          );
+        }
         requestAnimationFrame(draw);
       }
     </script>
