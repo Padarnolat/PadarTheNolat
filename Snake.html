@@ -71,6 +71,7 @@
         let cellheight = canvas.height / rows;
         let direction = "LEFT";
         let foodCollected = false;
+        let score = 0;
 
         placeFood();
 
@@ -88,6 +89,10 @@
 
           ctx.fillStyle = "yellow";
           add(food.x, food.y);
+
+          ctx.fillStyle = "white";
+          ctx.font = "20px Ariel";
+          ctx.fillText("Score: " + score, 20, 30);
 
           requestAnimationFrame(draw);
         }
@@ -158,6 +163,7 @@
             ];
 
             foodCollected = false;
+            score++;
           }
 
           shiftSnake();
